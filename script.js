@@ -1,8 +1,8 @@
 const navItems = [
     {
         title: "Pong",
-        tech: "web-gl",
-        url: "pong-webgl"
+        tech: "HTML5 Canvas",
+        url: "pong-canvas"
     }
 ];
 

@@ -1,0 +1,74 @@
+
+.page-container {
+    background-color: var(--dark);
+    height: 100vh;
+    width: 100vw;
+    background-image: radial-gradient(#2d2d2d 1px, transparent 0);
+    background-size: 25px 25px;
+    background-position: -25px -25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.header {
+    height: 15vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--light);
+}
+
+.title {
+    font-size: 5rem;
+}
+.subtitle {
+    margin-top: -10px;
+    font-size: 1rem;
+}
+
+.game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    border: 1px var(--dark) solid;
+    height: min(85vh, 85vw);
+    width: min(85vh, 85vw);
+    border-radius: 20px;
+}
+
+.kbd-container {
+ height: min-content;
+ width: min-content;
+ display: flex;
+ flex-direction: column;
+ gap: 10px;
+ padding-left: 10px;
+ padding-right: 10px;
+}
+
+.kbd-key {
+    height: 2em;
+    width: 2em;
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #2d2d2d;
+    border: 1px #4d4d4d solid;
+    border-bottom: 4px #4d4d4d solid;
+    padding-bottom: 5px;
+}
+
+.kbd-key-active {
+    background-color: #3d3d3d;
+    scale: 0.9;
+}

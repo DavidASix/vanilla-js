@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/global.css" rel="stylesheet" />
+    <link href="./styles.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>DavidASix | Pong</title>
+</head>
+<body class="page-container">
+    <div class="header">
+        <h1 class="title">Pong</h1>
+        <span class="subtitle">Made with Vanilla JS</span>
+    </div>
+    <div class="game-container">
+        <div class="kbd-container">
+            <div class="kbd-key" id="key-ind-w">
+                W
+            </div>
+
+            <div class="kbd-key" id="key-ind-s">
+                S
+            </div>
+        </div>
+        <canvas id="pong" height="1000" width="1000"></canvas>
+
+        <div class="kbd-container">
+            <div class="kbd-key" id="key-ind-up">
+                ⬆️
+            </div>
+
+            <div class="kbd-key" id="key-ind-down">
+                ⬇️
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./script.js"></script>
+</body>
+</html>
