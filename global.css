@@ -1,0 +1,41 @@
+:root {
+    --dark: #39393a;
+    --light: #f0f0f0;
+    --primary: #297373;
+    --secondary: #bfab25;
+  }
+  
+  * {
+    box-sizing: border-box;
+    font-family: "Work Sans", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: var(--dark);
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    padding: 0px;
+    margin: 0px;
+    background-color: var(--light);
+  }
+
+  body {
+    padding: 0px;
+    margin: 0px;
+  }
+p,
+span,
+nav,
+a,
+h1,
+h2,
+h3 {
+  margin: 0px;
+  color: inherit;
+}
+
+h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 600;
+  }
