@@ -3,7 +3,12 @@ const navItems = [
         title: "Pong",
         tech: "HTML5 Canvas",
         url: "pong-canvas"
-    }
+    },
+    {
+        title: "WebGL Playground",
+        tech: "WebGL",
+        url: "webgl-playground"
+    },
 ];
 
 const navList = document.getElementById("nav-list");

@@ -1,0 +1,5 @@
+canvas {
+    border: 1px purple solid;
+    height: min(70vh, 70vw);
+    width: min(70vh, 70vw);
+}
