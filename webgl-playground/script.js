@@ -12,43 +12,31 @@ function randomColor() {
   return [Math.random(), Math.random(), Math.random()];
 }
 
-// Draw a triangle
-const vertexData = [
-  //x, y, z
-  //1
-  0, 0.707, 0,
-  // 2
-  1, -1, 0,
-  // 3
-  -1, -1, 0,
-];
-const colorData = [...randomColor(), ...randomColor(), ...randomColor()];
-
 const cubeVertexData = [
   // F1
-  0, 1, 0, 1, 1, 0, 1, 0, 0,
+  -1, 1, 0, 1, 1, 0, 1, -1, 0,
   //F2
-  0, 1, 0, 0, 0, 0, 1, 0, 0,
+  -1, 1, 0, -1, -1, 0, 1, -1, 0,
   // L1
-  0, 1, -1, 0, 1, 0, 0, 0, 0,
+  -1, 1, -2, -1, 1, 0, -1, -1, 0,
   //L2
-  0, 1, -1, 0, 0, -1, 0, 0, 0,
+  -1, 1, -2, -1, -1, -2, -1, -1, 0,
   // R1
-  1, 1, 0, 1, 1, -1, 1, 0, -1,
+  1, 1, 0, 1, 1, -2, 1, -1, -2,
   // R2
-  1, 1, 0, 1, 0, 0, 1, 0, -1,
+  1, 1, 0, 1, -1, 0, 1, -1, -2,
   // T1
-  0, 1, -1, 1, 1, -1, 1, 1, 0,
+  -1, 1, -2, 1, 1, -2, 1, 1, 0,
   //T2
-  0, 1, -1, 0, 1, 0, 1, 1, 0,
+  -1, 1, -2, -1, 1, 0, 1, 1, 0,
   // B1
-  0, 0, 0, 1, 0, 0, 1, 0, -1,
+  -1, -1, 0, 1, -1, 0, 1, -1, -2,
   // B2
-  0, 0, 0, 0, 0, -1, 1, 0, -1,
+  -1, -1, 0, -1, -1, -2, 1, -1, -2,
   // Bk 1
-  1, 1, -1, 0, 1, -1, 0, 0, -1,
+  1, 1, -2, -1, 1, -2, -1, -1, -2,
   // Bk 2
-  1, 1, -1, 1, 0, -1, 0, 0, -1,
+  1, 1, -2, 1, -1, -2, -1, -1, -2,
 ];
 
 // Add 6 of the same color per, 6 times. Totals 6 colors coloring 36 vertices
@@ -157,11 +145,8 @@ const uniformLocations = {
 // this is done by multiplying the
 let modelMatrix = mat4.create();
 // (output, input, change)
-//mat4.rotateZ(matrix, matrix, Math.PI / 1)
-mat4.translate(modelMatrix, modelMatrix, [-0.5, -0.5, -1])
-mat4.scale(modelMatrix, modelMatrix, [0.25, 0.25, 0.25])
-mat4.translate(modelMatrix, modelMatrix, [1.5, 1.5, 0])
-
+mat4.translate(modelMatrix, modelMatrix, [0, 0, -1])
+mat4.scale(modelMatrix, modelMatrix, [0.1, 0.1, 0.1])
 
 // Perspective Matrix
 const projectionMatrix = mat4.create();
@@ -177,7 +162,8 @@ mat4.perspective(projectionMatrix,
 // to do, to the rest of the world. Camera stands still and world moves.
 const cameraMatrix = mat4.create();
 // Where you want to move the camera
-mat4.translate(cameraMatrix,cameraMatrix, [-0.25,0,0])
+mat4.translate(cameraMatrix,cameraMatrix, [0,0,0])
+
 // camera must be inverted as it is our eyes
 mat4.invert(cameraMatrix, cameraMatrix)
 
