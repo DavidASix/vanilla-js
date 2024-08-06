@@ -1,6 +1,6 @@
 //import {glMatrix} from './gl-matrix.js';
 
-const {mat4} = glMatrix;
+const { mat4 } = glMatrix;
 const canvas = document.getElementById("test");
 const gl = canvas.getContext("webgl");
 
@@ -8,42 +8,69 @@ if (!gl) {
   throw new Error("WebGL Not Supported");
 }
 
+function randomColor() {
+  return [Math.random(), Math.random(), Math.random()];
+}
+
+// Draw a triangle
 const vertexData = [
   //x, y, z
-  0,
-  1,
-  0, //1
-  1,
-  -1,
-  0, // 2
-  -1,
-  -1,
-  0, // 3
+  //1
+  0, 0.707, 0,
+  // 2
+  1, -1, 0,
+  // 3
+  -1, -1, 0,
+];
+const colorData = [...randomColor(), ...randomColor(), ...randomColor()];
+
+const cubeVertexData = [
+  // F1
+  0, 1, 0, 1, 1, 0, 1, 0, 0,
+  //F2
+  0, 1, 0, 0, 0, 0, 1, 0, 0,
+  // L1
+  0, 1, -1, 0, 1, 0, 0, 0, 0,
+  //L2
+  0, 1, -1, 0, 0, -1, 0, 0, 0,
+  // R1
+  1, 1, 0, 1, 1, -1, 1, 0, -1,
+  // R2
+  1, 1, 0, 1, 0, 0, 1, 0, -1,
+  // T1
+  0, 1, -1, 1, 1, -1, 1, 1, 0,
+  //T2
+  0, 1, -1, 0, 1, 0, 1, 1, 0,
+  // B1
+  0, 0, 0, 1, 0, 0, 1, 0, -1,
+  // B2
+  0, 0, 0, 0, 0, -1, 1, 0, -1,
+  // Bk 1
+  1, 1, -1, 0, 1, -1, 0, 0, -1,
+  // Bk 2
+  1, 1, -1, 1, 0, -1, 0, 0, -1,
 ];
 
-const colorData = [
-  1,
-  0,
-  0, // c1
-  1,
-  1,
-  0, // c2
-  1,
-  0,
-  1, //c3
-];
+// Add 6 of the same color per, 6 times. Totals 6 colors coloring 36 vertices
+const cubeColors = [];
+for (let i = 0; i < 6; i++ ) {
+  const rC = randomColor();
+  for (let j = 0; j < 6; j++) {
+    cubeColors.push(...rC)
+  }
+}
 
 const positionBuffer = gl.createBuffer();
 // Set our above buffer as the current Array buffer (an array of vertex data)
 gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 // Set the vertex data to our buffer
 // (what are we writing to, the data we are writing, how often it gets updated [static, dynamic])
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertexData), gl.STATIC_DRAW);
 
 // COLOR BUFFER
 const colorBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colorData), gl.STATIC_DRAW);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeColors), gl.STATIC_DRAW);
 
 //SHADERS
 
@@ -120,18 +147,28 @@ gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, 0, 0);
 gl.useProgram(program);
 
 // After using the program, you can apply translations to the vectors
-// this is done by multiplying the 
+// this is done by multiplying the
 let matrix = mat4.create();
 // (output, input, change)
-mat4.scale(matrix, matrix, [0.5, 0.5, 1])
-mat4.rotateZ(matrix, matrix, Math.PI / 2)
+mat4.scale(matrix, matrix, [0.5, 0.5, 0.5])
+//mat4.rotateZ(matrix, matrix, Math.PI / 2)
 //mat4.translate(matrix, matrix, [0.1,0.5,0])
+
+// Enabling depth changes from rendering vertexs in order they appear in array to their appropriate depth
+gl.enable(gl.DEPTH_TEST);
 const uniformLocations = {
-  matrix: gl.getUniformLocation(program, 'matrix')
+  matrix: gl.getUniformLocation(program, "matrix"),
 };
 
-// (location of value we're editting, should be transposed, input matrix)
-gl.uniformMatrix4fv(uniformLocations.matrix, false, matrix)
+function animate() {
+  requestAnimationFrame(animate);
+  mat4.rotateZ(matrix, matrix, Math.PI / 800);
+  mat4.rotateY(matrix, matrix, Math.PI / 200);
+  mat4.rotateX(matrix, matrix, Math.PI / 400);
+  // (location of value we're editting, should be transposed, input matrix)
+  gl.uniformMatrix4fv(uniformLocations.matrix, false, matrix);
+  // (What are we drawing, what is the starting vertex, how many vertexes to draw )
+  gl.drawArrays(gl.TRIANGLES, 0, cubeVertexData.length / 3);
+}
 
-// (What are we drawing, what is the starting vertex, how many vertexes to draw )
-gl.drawArrays(gl.TRIANGLES, 0, 3);
+animate();
