@@ -146,27 +146,64 @@ gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, 0, 0);
 
 gl.useProgram(program);
 
-// After using the program, you can apply translations to the vectors
-// this is done by multiplying the
-let matrix = mat4.create();
-// (output, input, change)
-mat4.scale(matrix, matrix, [0.5, 0.5, 0.5])
-//mat4.rotateZ(matrix, matrix, Math.PI / 2)
-//mat4.translate(matrix, matrix, [0.1,0.5,0])
-
 // Enabling depth changes from rendering vertexs in order they appear in array to their appropriate depth
 gl.enable(gl.DEPTH_TEST);
 const uniformLocations = {
   matrix: gl.getUniformLocation(program, "matrix"),
 };
 
+
+// After using the program, you can apply translations to the vectors
+// this is done by multiplying the
+let modelMatrix = mat4.create();
+// (output, input, change)
+//mat4.rotateZ(matrix, matrix, Math.PI / 1)
+mat4.translate(modelMatrix, modelMatrix, [-0.5, -0.5, -1])
+mat4.scale(modelMatrix, modelMatrix, [0.25, 0.25, 0.25])
+mat4.translate(modelMatrix, modelMatrix, [1.5, 1.5, 0])
+mat4.translate(modelMatrix, modelMatrix, [0, 0, 0])
+
+
+// Perspective Matrix
+const projectionMatrix = mat4.create();
+mat4.perspective(projectionMatrix,
+    55 * Math.PI/180, // vertical FOV (angle, radians)
+    canvas.width / canvas.height, //aspect ratio w/h
+    1e-4, // near cull distance (how close to camera can you get before going through it). Can't be zero, but should be small
+    1e4, //render disntace (far cull distance)
+  )
+
+// Camera Matrix
+// Camera isn't really a thing, so we apply the inverse of what we want the camera
+// to do, to the rest of the world. Camera stands still and world moves.
+const cameraMatrix = mat4.create();
+// Where you want to move the camera
+mat4.translate(cameraMatrix,cameraMatrix, [-0.25,0,0])
+// camera must be inverted as it is our eyes
+mat4.invert(cameraMatrix, cameraMatrix)
+
+const pmMatrix = mat4.create();
+const finalMatrix = mat4.create();
+
 function animate() {
   requestAnimationFrame(animate);
-  mat4.rotateZ(matrix, matrix, Math.PI / 800);
-  mat4.rotateY(matrix, matrix, Math.PI / 200);
-  mat4.rotateX(matrix, matrix, Math.PI / 400);
+  // Reset model matrix to identity
+  mat4.identity(modelMatrix);
+
+  // Apply transformations
+  mat4.translate(modelMatrix, modelMatrix, [-0.5, -0.5, -1]); // Initial translation
+  mat4.scale(modelMatrix, modelMatrix, [0.25, 0.25, 0.25]);   // Scaling
+  mat4.translate(modelMatrix, modelMatrix, [1.5, 1.5, 0]);    // Move to the new position
+
+  // Apply rotation around the center
+  mat4.translate(modelMatrix, modelMatrix, [0.5, 0.5, 0]);    // Translate to center of cube
+  mat4.rotateY(modelMatrix, modelMatrix, Math.PI / 200);       // Rotate around Y-axis
+  mat4.translate(modelMatrix, modelMatrix, [-0.5, -0.5, 0]);   // Translate back from center
+
+  // Compute the final matrix
+  mat4.multiply(finalMatrix, projectionMatrix, modelMatrix);
   // (location of value we're editting, should be transposed, input matrix)
-  gl.uniformMatrix4fv(uniformLocations.matrix, false, matrix);
+  gl.uniformMatrix4fv(uniformLocations.matrix, false, finalMatrix);
   // (What are we drawing, what is the starting vertex, how many vertexes to draw )
   gl.drawArrays(gl.TRIANGLES, 0, cubeVertexData.length / 3);
 }
