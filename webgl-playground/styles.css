@@ -1,16 +1,17 @@
 body {
     min-height: 100vh;
     width: 100vw;
-    background-color: var(--light);
+    background-color: var(--dark);
     gap: 40px;
 }
 
 h1 {
     font-size: 4rem;
+    color: var(--light)
 }
 
 canvas {
-    border: 1px var(--dark) solid;
+    border: 1px var(--primary) solid;
     border-radius: 30px;
     height: min(70vh, 70vw);
     width: min(70vh, 70vw);

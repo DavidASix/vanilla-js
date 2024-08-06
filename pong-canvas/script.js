@@ -10,7 +10,7 @@ const keyIndS = document.getElementById("key-ind-s");
 const keyIndUp = document.getElementById("key-ind-up");
 const keyIndDown = document.getElementById("key-ind-down");
 
-const winningScore = 0;
+const winningScore = 5;
 
 let ball = new Ball(ctx);
 let player1 = new Player(ctx, 1);
@@ -27,10 +27,12 @@ function resetGameplayState() {
 }
 
 addEventListener("keydown", (e) => {
+  e.preventDefault()
   keys[e.code] = true;
 });
 
 addEventListener("keyup", (e) => {
+  e.preventDefault()
   keys[e.code] = false;
 });
 
