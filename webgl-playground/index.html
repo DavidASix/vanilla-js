@@ -11,12 +11,16 @@
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
+    <script src="../components/header.js" type="text/javascript" defer></script>
     <title>Web GL</title>
 </head>
 <body>
+  <header-component></header-component>
+  <section style="width:100%;display:flex;flex-direction: column; align-items: center;">
     <h1>Web GL</h1>
     <canvas height="1000" width="1000"  class="webgl" id="test"></canvas>
-    <script src="../libs/gl-matrix-min.js"></script>
-    <script type="module" src="./script.js"></script>
+  </section>
+  <script src="../libs/gl-matrix-min.js"></script>
+  <script type="module" src="./script.js"></script>
 </body>
 </html>
