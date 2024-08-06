@@ -1,4 +1,4 @@
-const { mat4 } = glMatrix;
+const { mat4, vec3 } = glMatrix;
 const canvas = document.getElementById("test");
 const gl = canvas.getContext("webgl");
 
@@ -10,55 +10,28 @@ function randomColor() {
   return [Math.random(), Math.random(), Math.random()];
 }
 
-// DATA
-const cubeVertexData = [
-  // F1
-  0, 1, 0, 1, 1, 0, 1, 0, 0,
-  //F2
-  0, 1, 0, 0, 0, 0, 1, 0, 0,
-  // L1
-  0, 1, -1, 0, 1, 0, 0, 0, 0,
-  //L2
-  0, 1, -1, 0, 0, -1, 0, 0, 0,
-  // R1
-  1, 1, 0, 1, 1, -1, 1, 0, -1,
-  // R2
-  1, 1, 0, 1, 0, 0, 1, 0, -1,
-  // T1
-  0, 1, -1, 1, 1, -1, 1, 1, 0,
-  //T2
-  0, 1, -1, 0, 1, 0, 1, 1, 0,
-  // B1
-  0, 0, 0, 1, 0, 0, 1, 0, -1,
-  // B2
-  0, 0, 0, 0, 0, -1, 1, 0, -1,
-  // Bk 1
-  1, 1, -1, 0, 1, -1, 0, 0, -1,
-  // Bk 2
-  1, 1, -1, 1, 0, -1, 0, 0, -1,
-];
-
-// Add 6 of the same color per, 6 times. Totals 6 colors coloring 36 vertices
-const cubeColors = [];
-for (let i = 0; i < 6; i++) {
-  const rC = randomColor();
-  for (let j = 0; j < 6; j++) {
-    cubeColors.push(...rC);
+function spherePointCloud(pointCount) {
+  let points = [];
+  for (let i = 0; i < pointCount; i++) {
+    const rPoint = () => Math.random() - 0.5;
+    const point = [rPoint(), rPoint(), rPoint()]
+    // Vec3 normalize maintains the direction of a vector but changes its length to the origin to 1
+    const normalizedPoint = vec3.normalize(vec3.create(), point)
+    points.push(...normalizedPoint)
   }
+  return points;
 }
+
+const pointCount = 5e4
 
 // BUFFERs
 const positionBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 gl.bufferData(
   gl.ARRAY_BUFFER,
-  new Float32Array(cubeVertexData),
+  new Float32Array(spherePointCloud(pointCount)),
   gl.STATIC_DRAW
 );
-
-const colorBuffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeColors), gl.STATIC_DRAW);
 
 //SHADERS
 const vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -73,8 +46,9 @@ gl.shaderSource(
     uniform mat4 matrix;
 
     void main() {
-        vColor = color;
+        vColor = vec3(position.xy, 0.5);
         gl_Position = matrix * vec4(position, 1);
+        gl_PointSize = 2.0;
     }
     `
 );
@@ -111,11 +85,6 @@ gl.enableVertexAttribArray(positionLocation);
 gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
 
-const colorLocation = gl.getAttribLocation(program, "color");
-gl.enableVertexAttribArray(colorLocation);
-gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, 0, 0);
-
 gl.useProgram(program);
 
 // ENABLE DEPTH INSTEAD OF ORDERED RENDERING
@@ -125,10 +94,7 @@ const uniformLocations = {
 };
 
 let modelMatrix = mat4.create();
-mat4.translate(modelMatrix, modelMatrix, [-0.5, -0.5, -1]);
-mat4.scale(modelMatrix, modelMatrix, [0.25, 0.25, 0.25]);
-mat4.translate(modelMatrix, modelMatrix, [1.5, 1.5, 0]);
-
+mat4.translate(modelMatrix, modelMatrix, [0, 0, -3]);
 // Perspective Matrix
 const projectionMatrix = mat4.create();
 mat4.perspective(
@@ -142,7 +108,7 @@ mat4.perspective(
 // Camera Matrix
 const cameraMatrix = mat4.create();
 // Where you want to move the camera
-mat4.translate(cameraMatrix, cameraMatrix, [-0.25, 0, 0]);
+mat4.translate(cameraMatrix, cameraMatrix, [0, 0, 0]);
 // camera must be inverted as it is our eyes
 mat4.invert(cameraMatrix, cameraMatrix);
 
@@ -151,11 +117,11 @@ const finalMatrix = mat4.create();
 
 function animate() {
   requestAnimationFrame(animate);
-  mat4.rotateY(modelMatrix, modelMatrix, Math.PI / 200);
+  mat4.rotateY(modelMatrix, modelMatrix, Math.PI / 400);
   mat4.multiply(pmMatrix, projectionMatrix, modelMatrix);
   mat4.multiply(finalMatrix, cameraMatrix, pmMatrix);
   gl.uniformMatrix4fv(uniformLocations.matrix, false, finalMatrix);
-  gl.drawArrays(gl.TRIANGLES, 0, cubeVertexData.length / 3);
+  gl.drawArrays(gl.POINTS, 0, pointCount / 3);
 }
 
 animate();
