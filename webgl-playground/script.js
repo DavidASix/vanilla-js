@@ -161,7 +161,6 @@ let modelMatrix = mat4.create();
 mat4.translate(modelMatrix, modelMatrix, [-0.5, -0.5, -1])
 mat4.scale(modelMatrix, modelMatrix, [0.25, 0.25, 0.25])
 mat4.translate(modelMatrix, modelMatrix, [1.5, 1.5, 0])
-mat4.translate(modelMatrix, modelMatrix, [0, 0, 0])
 
 
 // Perspective Matrix
@@ -187,21 +186,12 @@ const finalMatrix = mat4.create();
 
 function animate() {
   requestAnimationFrame(animate);
-  // Reset model matrix to identity
-  mat4.identity(modelMatrix);
-
-  // Apply transformations
-  mat4.translate(modelMatrix, modelMatrix, [-0.5, -0.5, -1]); // Initial translation
-  mat4.scale(modelMatrix, modelMatrix, [0.25, 0.25, 0.25]);   // Scaling
-  mat4.translate(modelMatrix, modelMatrix, [1.5, 1.5, 0]);    // Move to the new position
-
-  // Apply rotation around the center
-  mat4.translate(modelMatrix, modelMatrix, [0.5, 0.5, 0]);    // Translate to center of cube
-  mat4.rotateY(modelMatrix, modelMatrix, Math.PI / 200);       // Rotate around Y-axis
-  mat4.translate(modelMatrix, modelMatrix, [-0.5, -0.5, 0]);   // Translate back from center
-
-  // Compute the final matrix
-  mat4.multiply(finalMatrix, projectionMatrix, modelMatrix);
+  mat4.rotateZ(modelMatrix, modelMatrix, Math.PI / 1500);
+  mat4.rotateY(modelMatrix, modelMatrix, Math.PI / 200);
+  mat4.rotateX(modelMatrix, modelMatrix, Math.PI / 400);
+  
+  mat4.multiply(pmMatrix, projectionMatrix, modelMatrix);
+  mat4.multiply(finalMatrix, cameraMatrix, pmMatrix);
   // (location of value we're editting, should be transposed, input matrix)
   gl.uniformMatrix4fv(uniformLocations.matrix, false, finalMatrix);
   // (What are we drawing, what is the starting vertex, how many vertexes to draw )
