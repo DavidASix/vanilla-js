@@ -28,9 +28,11 @@ const navList = document.getElementById("nav-list");
 class Header extends HTMLElement {
     constructor() {
       super();
+      this.path = location.pathname;
     }
-  
+    
     connectedCallback() {
+      console.log(this.path)
       this.innerHTML = `
         <style>
           header.nav {
@@ -68,13 +70,16 @@ class Header extends HTMLElement {
           a.nav:hover {
             color: var(--primary);
           }
+          a.nav-active {
+            color: var(--secondary);
+          }
         </style>
         <header class="nav">
           <nav class="nav">
             <ul class="nav">
                 ${navItems.map((item, i) => `
                 <li class="nav">
-                  <a href="/${item.url}" class="nav">
+                  <a href="/${item.url}" class="nav ${this.path.includes(`/${item.url}/`) ? 'nav-active' : 'no'}">
                       ${item.title}
                   </a>
                 </li>`).join('\n')}
